@@ -1,8 +1,13 @@
 package handlers
 
-import "net/http"
+import (
+	"net/http"
+
+	"ingresso.go/services/responses"
+)
 
 func GetHealth(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("ok"))
+	responses.SendSuccess(w, responses.ResponseData{
+		Message: "ok",
+	}, http.StatusOK)
 }
