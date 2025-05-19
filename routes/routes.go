@@ -5,9 +5,9 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"ingresso.go/handlers"
-	"ingresso.go/handlers/auth"
-	"ingresso.go/services"
+	handlers "ingresso.go/domain"
+	"ingresso.go/domain/auth"
+	"ingresso.go/infra/services"
 )
 
 type RouterParams struct {

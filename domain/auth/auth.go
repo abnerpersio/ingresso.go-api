@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"ingresso.go/services"
+	"ingresso.go/infra/services"
 )
 
 type AuthHandler struct {

@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"ingresso.go/services/responses"
+	"ingresso.go/infra/services/responses"
 )
 
 func GetHealth(w http.ResponseWriter, r *http.Request) {
