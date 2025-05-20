@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"strings"
 
-	"ingresso.go/infra/services/responses"
+	"ingresso.go/internal/infra/services/responses"
 )
 
 func (auth *AuthHandler) ExchangeCode(w http.ResponseWriter, r *http.Request) {

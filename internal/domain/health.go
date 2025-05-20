@@ -1,9 +1,9 @@
-package handlers
+package domain
 
 import (
 	"net/http"
 
-	"ingresso.go/infra/services/responses"
+	"ingresso.go/internal/infra/services/responses"
 )
 
 func GetHealth(w http.ResponseWriter, r *http.Request) {

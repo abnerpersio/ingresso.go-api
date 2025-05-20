@@ -8,9 +8,9 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"ingresso.go/infra/config"
-	"ingresso.go/infra/services"
-	"ingresso.go/routes"
+	"ingresso.go/internal/infra/config"
+	"ingresso.go/internal/infra/services"
+	"ingresso.go/internal/routes"
 )
 
 func initEnv() {
