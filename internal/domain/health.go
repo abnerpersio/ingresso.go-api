@@ -3,11 +3,9 @@ package domain
 import (
 	"net/http"
 
-	"ingresso.go/internal/infra/services/responses"
+	"github.com/gin-gonic/gin"
 )
 
-func GetHealth(w http.ResponseWriter, r *http.Request) {
-	responses.SendSuccess(w, responses.ResponseData{
-		Message: "ok",
-	}, http.StatusOK)
+func GetHealth(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"message": "ok"})
 }

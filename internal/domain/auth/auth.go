@@ -1,4 +1,4 @@
-package auth
+package domain_auth
 
 import (
 	"ingresso.go/internal/infra/services"

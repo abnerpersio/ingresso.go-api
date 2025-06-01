@@ -9,7 +9,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
+	cognito "github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
 )
 
 type CognitoConfig struct {
@@ -20,7 +20,7 @@ type CognitoConfig struct {
 }
 
 type CognitoService struct {
-	Client *cognitoidentityprovider.Client
+	client *cognito.Client
 	Config *CognitoConfig
 }
 
@@ -31,10 +31,10 @@ func NewCognitoService(cognitoConfig CognitoConfig) *CognitoService {
 		log.Fatalf("failed to load AWS config: %v", err)
 	}
 
-	client := cognitoidentityprovider.NewFromConfig(config)
+	client := cognito.NewFromConfig(config)
 
 	return &CognitoService{
-		Client: client,
+		client: client,
 		Config: &cognitoConfig,
 	}
 }
@@ -52,8 +52,8 @@ func generateSecretHash(username string, config *CognitoConfig) string {
 	return secretHash
 }
 
-func (service *CognitoService) AuthenticateUser(email, password string) (*cognitoidentityprovider.InitiateAuthOutput, error) {
-	input := &cognitoidentityprovider.InitiateAuthInput{
+func (service *CognitoService) AuthenticateUser(email, password string) (*cognito.InitiateAuthOutput, error) {
+	input := &cognito.InitiateAuthInput{
 		AuthFlow: "USER_PASSWORD_AUTH",
 		ClientId: aws.String(service.Config.AppClientID),
 		AuthParameters: map[string]string{
@@ -63,11 +63,11 @@ func (service *CognitoService) AuthenticateUser(email, password string) (*cognit
 		},
 	}
 
-	return service.Client.InitiateAuth(context.TODO(), input)
+	return service.client.InitiateAuth(context.TODO(), input)
 }
 
-func (service *CognitoService) RefreshToken(email, refreshToken string) (*cognitoidentityprovider.InitiateAuthOutput, error) {
-	input := &cognitoidentityprovider.InitiateAuthInput{
+func (service *CognitoService) RefreshToken(email, refreshToken string) (*cognito.InitiateAuthOutput, error) {
+	input := &cognito.InitiateAuthInput{
 		AuthFlow: "REFRESH_TOKEN_AUTH",
 		ClientId: aws.String(service.Config.AppClientID),
 		AuthParameters: map[string]string{
@@ -76,5 +76,19 @@ func (service *CognitoService) RefreshToken(email, refreshToken string) (*cognit
 		},
 	}
 
-	return service.Client.InitiateAuth(context.TODO(), input)
+	return service.client.InitiateAuth(context.TODO(), input)
+}
+
+func (service *CognitoService) GetUserByToken(accessToken string) (*cognito.GetUserOutput, error) {
+	input := &cognito.GetUserInput{
+		AccessToken: aws.String(accessToken),
+	}
+
+	result, err := service.client.GetUser(context.TODO(), input)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }

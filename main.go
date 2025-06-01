@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -26,9 +24,6 @@ func initEnv() {
 func main() {
 	initEnv()
 
-	port := config.GetEnv("PORT", "8080")
-	address := ":" + port
-
 	cognitoService := services.NewCognitoService(services.CognitoConfig{
 		UserPoolID:      config.GetEnv("COGNITO_USER_POOL_ID"),
 		AppClientID:     config.GetEnv("COGNITO_APP_CLIENT_ID"),
@@ -36,12 +31,10 @@ func main() {
 		AppPoolDomain:   config.GetEnv("COGNITO_APP_POOL_DOMAIN"),
 	})
 
-	router := routes.Register(routes.RouterParams{
-		Cognito: cognitoService,
-	})
+	router := routes.Register(routes.RouterParams{Cognito: cognitoService})
 
-	fmt.Printf("Server starting on http://localhost%s\n", address)
-	err := http.ListenAndServe(address, router)
+	port := ":" + config.GetEnv("PORT", "8080")
+	err := router.Run(port)
 
 	if err != nil {
 		log.Fatalf("Error starting server: %v", err)

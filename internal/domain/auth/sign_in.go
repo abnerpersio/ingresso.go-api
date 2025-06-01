@@ -1,28 +1,32 @@
-package auth
+package domain_auth
 
 import (
-	"encoding/json"
 	"net/http"
 
-	"ingresso.go/internal/infra/services/responses"
+	"github.com/gin-gonic/gin"
+	"ingresso.go/internal/infra/services"
 )
 
-func (auth *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
-	var body struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
+type SignInInput struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
 
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		responses.SendError(w, "Invalid request payload", http.StatusBadRequest)
+func (auth *AuthHandler) SignIn(c *gin.Context) {
+	var body SignInInput
+	err := c.ShouldBind(&body)
+
+	if err != nil {
+		services.SendError(c, "Invalid request payload", http.StatusBadRequest)
 		return
 	}
 
 	authResp, err := auth.Cognito.AuthenticateUser(body.Username, body.Password)
+
 	if err != nil {
-		responses.SendError(w, "Authentication failed", http.StatusUnauthorized)
+		services.SendError(c, "Authentication failed", http.StatusUnauthorized)
 		return
 	}
 
-	json.NewEncoder(w).Encode(authResp.AuthenticationResult)
+	c.JSON(http.StatusOK, authResp.AuthenticationResult)
 }

@@ -1,29 +1,32 @@
-package auth
+package domain_auth
 
 import (
-	"encoding/json"
 	"net/http"
 
-	"ingresso.go/internal/infra/services/responses"
+	"github.com/gin-gonic/gin"
+	"ingresso.go/internal/infra/services"
 )
 
-func (auth *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	var body struct {
-		Email        string `json:"email"`
-		RefreshToken string `json:"refresh_token"`
-	}
+type RefreshTokenInput struct {
+	Email        string `json:"email"`
+	RefreshToken string `json:"refresh_token"`
+}
 
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		responses.SendError(w, "Invalid request payload", http.StatusBadRequest)
+func (auth *AuthHandler) RefreshToken(c *gin.Context) {
+	var body RefreshTokenInput
+	err := c.ShouldBind(&body)
+
+	if err != nil {
+		services.SendError(c, "Invalid request payload", http.StatusBadRequest)
 		return
 	}
 
 	authResp, err := auth.Cognito.RefreshToken(body.Email, body.RefreshToken)
 
 	if err != nil {
-		responses.SendError(w, "Authentication failed", http.StatusUnauthorized)
+		services.SendError(c, "Authentication failed", http.StatusUnauthorized)
 		return
 	}
 
-	json.NewEncoder(w).Encode(authResp.AuthenticationResult)
+	c.JSON(http.StatusOK, authResp.AuthenticationResult)
 }
