@@ -12,13 +12,27 @@ Install dependencies
 go mod tidy
 ```
 
-Run server
+Run dev server
 
 ```bash
-go run main.go
+air
+```
+
+Build and run compiled
+
+```bash
+go build -o go-api /app/api/main.go
+```
+
+```
+./go-api
 ```
 
 #### Running with docker
+
+```bash
+docker compose up -d
+```
 
 #### Endpoints
 

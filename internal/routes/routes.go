@@ -31,7 +31,7 @@ func Register(params RouterParams) *gin.Engine {
 	authorized := router.Group("/", authMiddleware.Middleware())
 	authorized.GET("/v1/user/profile", user.GetProfile)
 	authorized.GET("/v1/movies", movies.ListMovies)
-	// authorized.GET("/v1/movies/:movieId/sessions", movies.ListSessions)
+	authorized.GET("/v1/movies/:movieId/sessions", movies.ListSessions)
 	// authorized.GET("/v1/movies/:movieId/sessions/:sessionId", movies.GetSession)
 
 	return router
