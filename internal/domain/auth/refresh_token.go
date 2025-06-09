@@ -1,6 +1,7 @@
-package domain_auth
+package auth
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -8,8 +9,8 @@ import (
 )
 
 type RefreshTokenInput struct {
-	Email        string `json:"email"`
-	RefreshToken string `json:"refresh_token"`
+	Username     string `json:"username" binding:"required"`
+	RefreshToken string `json:"refresh_token" binding:"required"`
 }
 
 func (auth *AuthHandler) RefreshToken(c *gin.Context) {
@@ -21,12 +22,15 @@ func (auth *AuthHandler) RefreshToken(c *gin.Context) {
 		return
 	}
 
-	authResp, err := auth.Cognito.RefreshToken(body.Email, body.RefreshToken)
+	authResp, err := auth.Cognito.RefreshToken(body.Username, body.RefreshToken)
 
 	if err != nil {
+		fmt.Println("Error refreshing token:", err)
 		services.SendError(c, "Authentication failed", http.StatusUnauthorized)
 		return
 	}
+
+	fmt.Printf("User resp token %p", authResp)
 
 	c.JSON(http.StatusOK, authResp.AuthenticationResult)
 }

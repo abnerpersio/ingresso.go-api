@@ -4,8 +4,9 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"ingresso.go/internal/domain"
-	domain_auth "ingresso.go/internal/domain/auth"
-	domain_user "ingresso.go/internal/domain/user"
+	"ingresso.go/internal/domain/auth"
+	"ingresso.go/internal/domain/movies"
+	"ingresso.go/internal/domain/user"
 	"ingresso.go/internal/infra/middlewares"
 	"ingresso.go/internal/infra/services"
 )
@@ -17,7 +18,7 @@ type RouterParams struct {
 func Register(params RouterParams) *gin.Engine {
 	router := gin.Default()
 
-	authHandler := &domain_auth.AuthHandler{Cognito: params.Cognito}
+	authHandler := &auth.AuthHandler{Cognito: params.Cognito}
 
 	router.Use(middlewares.CorsMiddleware())
 
@@ -28,7 +29,10 @@ func Register(params RouterParams) *gin.Engine {
 
 	authMiddleware := middlewares.Auth{Cognito: params.Cognito}
 	authorized := router.Group("/", authMiddleware.Middleware())
-	authorized.GET("/v1/user/profile", domain_user.GetProfile)
+	authorized.GET("/v1/user/profile", user.GetProfile)
+	authorized.GET("/v1/movies", movies.ListMovies)
+	// authorized.GET("/v1/movies/:movieId/sessions", movies.ListSessions)
+	// authorized.GET("/v1/movies/:movieId/sessions/:sessionId", movies.GetSession)
 
 	return router
 }

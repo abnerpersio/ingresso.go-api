@@ -1,6 +1,6 @@
 ## ingresso.go
 
-An API for practicing GoLang
+An API for practicing Go
 
 This project will be a ticket selling manager for movie theater
 
