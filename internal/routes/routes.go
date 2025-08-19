@@ -6,6 +6,7 @@ import (
 	"ingresso.go/internal/domain"
 	"ingresso.go/internal/domain/auth"
 	"ingresso.go/internal/domain/movies"
+	"ingresso.go/internal/domain/tickets"
 	"ingresso.go/internal/domain/user"
 	"ingresso.go/internal/infra/middlewares"
 	"ingresso.go/internal/infra/services"
@@ -31,8 +32,11 @@ func Register(params RouterParams) *gin.Engine {
 	authorized := router.Group("/", authMiddleware.Middleware())
 	authorized.GET("/v1/user/profile", user.GetProfile)
 	authorized.GET("/v1/movies", movies.ListMovies)
+	authorized.GET("/v1/movies/:movieId", movies.GetMovie)
 	authorized.GET("/v1/movies/:movieId/sessions", movies.ListSessions)
-	// authorized.GET("/v1/movies/:movieId/sessions/:sessionId", movies.GetSession)
+	authorized.GET("/v1/sessions/:sessionId", movies.GetSession)
+	authorized.POST("/v1/tickets", tickets.CreateTicket)
+	authorized.GET("/v1/tickets", tickets.ListTickets)
 
 	return router
 }

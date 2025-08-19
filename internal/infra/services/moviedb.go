@@ -45,6 +45,16 @@ type movieListResponse struct {
 	} `json:"results"`
 }
 
+type movieDetailsResponse struct {
+	Id            int32  `json:"id"`
+	OriginalTitle string `json:"original_title"`
+	Overview      string `json:"overview"`
+	PosterPath    string `json:"poster_path"`
+	ReleaseDate   string `json:"release_date"`
+	Title         string `json:"title"`
+	GenreIds      []int  `json:"genre_ids"`
+}
+
 type genreListResponse struct {
 	Genres []struct {
 		Id   int    `json:"id"`
@@ -158,4 +168,35 @@ func (service *MovieService) List() ([]Movie, error) {
 	}
 
 	return list, nil
+}
+
+func (service *MovieService) Get(movieId string) (Movie, error) {
+	req, err := makeRequest(http.MethodGet, fmt.Sprintf("/movie/%s", movieId), nil)
+
+	if err != nil {
+		return Movie{}, err
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+		return Movie{}, err
+	}
+
+	defer resp.Body.Close()
+	var response movieDetailsResponse
+	body, _ := io.ReadAll(resp.Body)
+	json.Unmarshal(body, &response)
+
+	movie := Movie{
+		Id:            fmt.Sprint(response.Id),
+		Title:         response.Title,
+		OriginalTitle: response.OriginalTitle,
+		Overview:      response.Overview,
+		PosterPath:    formatImageUrl(response.PosterPath),
+		ReleaseDate:   response.ReleaseDate,
+		Genres:        service.formatGenres(response.GenreIds),
+	}
+
+	return movie, nil
 }

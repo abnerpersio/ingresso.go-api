@@ -11,3 +11,25 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=ingresso_go
+
+  db:
+    image: postgres:15
+    container_name: ingresso-postgres
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/ingresso_go
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  postgres_data:

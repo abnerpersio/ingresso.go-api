@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -57,6 +58,7 @@ func (auth *Auth) Middleware() gin.HandlerFunc {
 		}
 
 		result, err := auth.Cognito.GetUserByToken(token)
+		fmt.Printf("Error on get user by token %v", err)
 
 		if err != nil || result == nil {
 			c.JSON(401, gin.H{"error": "Unauthorized"})
