@@ -164,7 +164,15 @@ The project uses PostgreSQL. When running with Docker, the database is automatic
 For manual database setup:
 
 ```bash
-psql -h localhost -U postgres -d ingresso_go -f db/init.sql
+psql "postgresql://root:root@localhost:5432" -f db/init.sql
+```
+
+If you prefer, there is a `migrate.sh` file that will migrate database based on `DATABASE_URL` environment variable. 
+
+Configure the variable and run:
+
+```bash
+./migrate.sh
 ```
 
 **Database connection details:**
