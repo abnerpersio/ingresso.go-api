@@ -9,7 +9,7 @@ Ingresso.GO is a RESTful API designed for movie theater ticket management. It pr
 ## 🛠 Tech Stack
 
 - **Language**: Go 1.23+
-- **Web Framework**: Gin
+- **Http Framework**: Gin
 - **Database**: PostgreSQL with pgx driver
 - **Authentication**: AWS Cognito
 - **Cloud Services**: AWS (SES for emails, Lambda functions)
